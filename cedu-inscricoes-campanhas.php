@@ -35,7 +35,6 @@ require_once DIR . '/includes/class-importador.php';
 require_once DIR . '/includes/api/class-autenticacao.php';
 require_once DIR . '/includes/api/class-rest-controller.php';
 require_once DIR . '/includes/api/class-rest-admin.php';
-require_once DIR . '/includes/class-atualizador.php';
 require_once DIR . '/includes/class-plugin.php';
 
 add_action( 'plugins_loaded', array( Plugin::class, 'iniciar' ) );

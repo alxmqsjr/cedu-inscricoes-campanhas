@@ -233,7 +233,7 @@ echo "\n== Telas ==\n";
 require_once ABSPATH . 'wp-admin/includes/admin.php';
 $_SERVER['HTTP_HOST']   = $_SERVER['HTTP_HOST'] ?? (string) wp_parse_url( home_url(), PHP_URL_HOST );
 $_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/wp-admin/edit.php';
-foreach ( array( 'class-tabela-inscricoes', 'class-tabela-midias', 'class-configuracoes', 'class-informacoes', 'class-colunas', 'class-admin' ) as $arq ) {
+foreach ( array( 'class-tabela-inscricoes', 'class-tabela-midias', 'class-configuracoes', 'class-markdown', 'class-informacoes', 'class-colunas', 'class-admin' ) as $arq ) {
 	require_once DIR . "/includes/admin/{$arq}.php";
 }
 set_current_screen( 'inscricoes_page_' . Admin::PAGINA_GERENCIAR );
@@ -267,7 +267,7 @@ Configuracoes::registrar_campos();
 Configuracoes::pagina();
 $html = (string) ob_get_clean();
 cedu_inscricoes_t( 'Configurações renderiza sem expor a chave', str_contains( $html, 'Chave da API' ) && ! str_contains( $html, $chave ) );
-cedu_inscricoes_t( 'Configurações mostra o recebimento e o link da documentação', str_contains( $html, 'Fechar recebimento' ) && str_contains( $html, Config::URL_DOC_CAMPOS ) );
+cedu_inscricoes_t( 'Configurações mostra o recebimento e o link da documentação', str_contains( $html, 'Fechar recebimento' ) && str_contains( $html, 'doc=campos' ) );
 cedu_inscricoes_t( 'Configurações destaca a constante do wp-config.php', str_contains( $html, esc_html( "define( 'CEDU_INSCRICOES_API_KEY', 'COLE-A-CHAVE-AQUI' );" ) ) && str_contains( $html, 'Gerar chave para o wp-config.php' ) );
 cedu_inscricoes_t( 'autor das inscrições é administrador', Config::eh_administrador( Config::autor() ) );
 $nao_admin = (int) ( get_users( array( 'role__not_in' => array( 'administrator' ), 'number' => 1, 'fields' => 'ID' ) )[0] ?? 0 );
@@ -278,9 +278,17 @@ cedu_inscricoes_t( 'Configurações aceita administrador como autor', Configurac
 ob_start();
 Informacoes::pagina();
 $html = (string) ob_get_clean();
-cedu_inscricoes_t( 'Informações renderiza tabela de campos, campos ignorados e link', str_contains( $html, 'tituloCampanha' ) && str_contains( $html, 'campoNovoTeste' ) && str_contains( $html, Config::URL_DOC_CAMPOS ) && ! str_contains( $html, 'valor-secreto' ) );
+cedu_inscricoes_t( 'Informações renderiza tabela de campos, campos ignorados e link', str_contains( $html, 'tituloCampanha' ) && str_contains( $html, 'campoNovoTeste' ) && str_contains( $html, 'doc=campos' ) && ! str_contains( $html, 'valor-secreto' ) );
 cedu_inscricoes_t( 'Informações: exemplo JSON válido', is_array( json_decode( Informacoes::exemplo_json(), true ) ) );
 cedu_inscricoes_t( 'Informações destaca a constante do wp-config.php', str_contains( $html, 'id="chave-wp-config"' ) && str_contains( $html, 'COLE-A-CHAVE-AQUI' ) );
+$_GET = array( 'doc' => 'campos' );
+ob_start();
+Informacoes::pagina();
+$html = (string) ob_get_clean();
+$_GET = array();
+cedu_inscricoes_t( 'guia dos campos no painel (títulos, tabelas e código)', str_contains( $html, '<h2>' ) && str_contains( $html, '<table' ) && str_contains( $html, '<pre><code>' ) && str_contains( $html, '<code>apelidos</code>' ) );
+cedu_inscricoes_t( 'guia dos campos sem marcação crua nem caracteres de controle', ! str_contains( $html, '**' ) && ! str_contains( $html, '```' ) && ! str_contains( $html, "\x00" ) );
+cedu_inscricoes_t( 'Markdown escapa HTML do texto', ! str_contains( Markdown::html( "Texto <script>alert(1)</script> e `<b>código</b>`\n\n[x](javascript:alert(1))" ), '<script>' ) && ! str_contains( Markdown::html( '[x](javascript:alert(1))' ), 'href' ) );
 
 echo "\n== Exclusão ==\n";
 $anexos_pid = Midia::anexos_da_inscricao( $pid );
@@ -298,72 +306,6 @@ $n   = (int) ( cedu_inscricoes_req( array( 'id' => $prefixo . '-C', 'tituloCampa
 $cap = (int) get_post_thumbnail_id( $n );
 wp_delete_post( $n, true );
 cedu_inscricoes_t( 'wp_delete_post nativo apaga a mídia', $cap > 0 && ! cedu_inscricoes_existe( $cap ) );
-
-echo "\n== Atualizador (só detecção, resposta do GitHub simulada) ==\n";
-$cedu_inscricoes_resposta = null;
-$simular = static function ( $pre, $args, $url ) use ( &$cedu_inscricoes_resposta ) {
-	if ( ! str_contains( (string) $url, 'api.github.com/repos/' . Atualizador::REPOSITORIO ) ) {
-		return $pre;
-	}
-	return $cedu_inscricoes_resposta;
-};
-add_filter( 'pre_http_request', $simular, 10, 3 );
-$release = static function ( array $extra = array(), int $codigo = 200 ) {
-	$base = array(
-		'tag_name'     => 'v9.9.9',
-		'draft'        => false,
-		'prerelease'   => false,
-		'html_url'     => 'https://github.com/' . Atualizador::REPOSITORIO . '/releases/tag/v9.9.9',
-		'body'         => 'Notas <script>x</script>',
-		'published_at' => '2026-11-18T00:00:00Z',
-		'assets'       => array(
-			array(
-				'name'                 => 'cedu-inscricoes-campanhas-9.9.9.zip',
-				'browser_download_url' => 'https://github.com/' . Atualizador::REPOSITORIO . '/releases/download/v9.9.9/cedu-inscricoes-campanhas-9.9.9.zip',
-			),
-		),
-	);
-	return array(
-		'headers'  => array(),
-		'body'     => (string) wp_json_encode( array_merge( $base, $extra ) ),
-		'response' => array(
-			'code'    => $codigo,
-			'message' => 'x',
-		),
-		'cookies'  => array(),
-	);
-};
-$transient_orig = get_transient( Atualizador::TRANSIENT );
-delete_transient( Atualizador::TRANSIENT );
-
-cedu_inscricoes_t( 'filtro de atualização registrado', false !== has_filter( 'update_plugins_github.com', array( Atualizador::class, 'verificar' ) ) );
-$cedu_inscricoes_resposta = $release();
-$oferta = apply_filters( 'update_plugins_github.com', false, array(), plugin_basename( ARQUIVO ) );
-cedu_inscricoes_t( 'release válida → oferece a versão 9.9.9', is_array( $oferta ) && '9.9.9' === $oferta['version'] && str_ends_with( $oferta['package'], '.zip' ) );
-$outro = apply_filters( 'update_plugins_github.com', false, array(), 'outro-plugin/outro.php' );
-cedu_inscricoes_t( 'não responde por outro plugin', false === $outro || ( is_array( $outro ) && ( $outro['slug'] ?? '' ) !== Atualizador::SLUG ) );
-$info = Atualizador::detalhes( false, 'plugin_information', (object) array( 'slug' => Atualizador::SLUG ) );
-cedu_inscricoes_t( '"Ver detalhes" com notas escapadas', is_object( $info ) && ! str_contains( (string) $info->sections['changelog'], '<script>' ) );
-
-$casos = array(
-	'zip de outro repositório'   => array( 'assets' => array( array( 'name' => 'cedu-inscricoes-campanhas.zip', 'browser_download_url' => 'https://github.com/outra/conta/releases/download/v9.9.9/cedu-inscricoes-campanhas.zip' ) ) ),
-	'só o "Source code"'         => array( 'assets' => array() ),
-	'zip com outro nome'         => array( 'assets' => array( array( 'name' => 'malicioso.zip', 'browser_download_url' => 'https://github.com/' . Atualizador::REPOSITORIO . '/releases/download/v9.9.9/malicioso.zip' ) ) ),
-	'pre-release'                => array( 'prerelease' => true ),
-	'rascunho'                   => array( 'draft' => true ),
-	'tag que não é versão'       => array( 'tag_name' => 'ultima' ),
-);
-foreach ( $casos as $nome => $extra ) {
-	$cedu_inscricoes_resposta = $release( $extra );
-	cedu_inscricoes_t( "recusa: {$nome}", null === Atualizador::buscar() );
-}
-$cedu_inscricoes_resposta = $release( array(), 404 );
-cedu_inscricoes_t( 'repositório sem release (404) → nada oferecido, sem erro', null === Atualizador::buscar() );
-$cedu_inscricoes_resposta = new \WP_Error( 'http_request_failed', 'sem rede' );
-cedu_inscricoes_t( 'falha de rede → nada oferecido, sem erro', null === Atualizador::buscar() );
-
-remove_filter( 'pre_http_request', $simular, 10 );
-false === $transient_orig ? delete_transient( Atualizador::TRANSIENT ) : set_transient( Atualizador::TRANSIENT, $transient_orig, Atualizador::VALIDADE );
 
 echo "\n== Limpeza ==\n";
 if ( ! $padrao_antes && $padrao && ! Midia::eh_imagem_padrao( $padrao_antes ) ) {

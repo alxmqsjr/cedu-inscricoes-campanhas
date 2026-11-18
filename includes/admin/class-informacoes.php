@@ -29,10 +29,30 @@ final class Informacoes {
 		exit;
 	}
 
-	/** Imprime a tela. */
+	/** Imprime a tela (ou o guia de campos, com ?doc=campos). */
 	public static function pagina(): void {
 		Admin::exigir_permissao();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- só escolhe o que exibir.
+		if ( 'campos' === sanitize_key( wp_unslash( $_GET['doc'] ?? '' ) ) ) {
+			require DIR . '/templates/admin/pagina-documentacao.php';
+			return;
+		}
 		require DIR . '/templates/admin/pagina-informacoes.php';
+	}
+
+	/** Endereço do guia de campos no painel. */
+	public static function url_doc(): string {
+		return Admin::url( Admin::PAGINA_INFORMACOES, array( 'doc' => 'campos' ) );
+	}
+
+	/** HTML do docs/CAMPOS.md que vai junto com o plugin. */
+	public static function html_doc(): string {
+		$arquivo = DIR . '/docs/CAMPOS.md';
+		if ( ! is_readable( $arquivo ) ) {
+			return '<p>' . esc_html__( 'O arquivo docs/CAMPOS.md não foi encontrado nesta instalação.', 'cedu-inscricoes-campanhas' ) . '</p>';
+		}
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- arquivo local do plugin.
+		return Markdown::html( (string) file_get_contents( $arquivo ) );
 	}
 
 	/** Ação do nonce de limpeza. */

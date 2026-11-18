@@ -218,7 +218,7 @@ $cedu_inscricoes_limpo = ! empty( $_GET['limpo'] );
 			<tr><td><?php esc_html_e( 'Mais ou menos imagens públicas', 'cedu-inscricoes-campanhas' ); ?></td><td><?php esc_html_e( 'Mudar "quantidade" em "imagens_publicas" (e o tema, se exibir mais imagens).', 'cedu-inscricoes-campanhas' ); ?></td></tr>
 		</tbody>
 	</table>
-	<p><a class="button" href="<?php echo esc_url( Config::URL_DOC_CAMPOS ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Abrir a documentação dos campos', 'cedu-inscricoes-campanhas' ); ?></a></p>
+	<p><a class="button" href="<?php echo esc_url( Informacoes::url_doc() ); ?>"><?php esc_html_e( 'Abrir o guia dos campos', 'cedu-inscricoes-campanhas' ); ?></a></p>
 
 	<h2 id="edicoes"><?php esc_html_e( 'Edições', 'cedu-inscricoes-campanhas' ); ?></h2>
 	<p><?php esc_html_e( 'Cada inscrição pertence a uma edição da campanha (taxonomia "Edição"). O Portal de Resultados e os filtros do painel usam essa marcação para separar os anos.', 'cedu-inscricoes-campanhas' ); ?></p>
@@ -338,8 +338,8 @@ wp inscricoes chave status</pre>
 		<a href="<?php echo esc_url( (string) ( $cedu_inscricoes_dados['AuthorURI'] ?? '' ) ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( (string) ( $cedu_inscricoes_dados['Author'] ?? '' ) ); ?></a>.
 	</p>
 	<p>
-		<a href="<?php echo esc_url( Config::URL_REPOSITORIO ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Repositório', 'cedu-inscricoes-campanhas' ); ?></a>
+		<a href="<?php echo esc_url( Config::URL_REPOSITORIO ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Repositório (acesso restrito)', 'cedu-inscricoes-campanhas' ); ?></a>
 		·
-		<a href="<?php echo esc_url( Config::URL_DOC_CAMPOS ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Documentação dos campos', 'cedu-inscricoes-campanhas' ); ?></a>
+		<a href="<?php echo esc_url( Informacoes::url_doc() ); ?>"><?php esc_html_e( 'Guia dos campos', 'cedu-inscricoes-campanhas' ); ?></a>
 	</p>
 </div>

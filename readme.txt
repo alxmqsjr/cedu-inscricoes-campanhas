@@ -30,16 +30,18 @@ O CPT `inscricoes` e as taxonomias `status_inscricao` e `edicao_inscricao` são 
 
 Nenhuma chave vem no código. Configure uma das opções:
 
-1. No `wp-config.php` (recomendado): `define( 'CEDU_INSCRICOES_API_KEY', 'sua-chave' );`
+1. No `wp-config.php` (recomendado): `define( 'CEDU_INSCRICOES_API_KEY', 'COLE-A-CHAVE-AQUI' );`, trocando o marcador pela chave.
 2. Em Inscrições → Configurações. O banco guarda só o hash SHA-256.
 
 Sem chave configurada, o endpoint responde 503 a todos os envios.
 
 == Installation ==
 
-1. Envie a pasta `cedu-inscricoes-campanhas` para `wp-content/plugins/` e ative o plugin.
+1. Em Plugins → Adicionar novo → Enviar plugin, envie o `cedu-inscricoes-campanhas-X.Y.Z.zip` e ative. Também dá para copiar a pasta `cedu-inscricoes-campanhas` para `wp-content/plugins/` por FTP.
 2. Configure a chave da API (ver acima).
 3. Confira a edição e o recebimento em Inscrições → Configurações.
+
+Não há atualização automática pelo painel. Para instalar uma versão nova, envie o zip novo e confirme "Substituir o atual pelo enviado", ou substitua a pasta por FTP. As configurações e as inscrições não são afetadas.
 
 == Changelog ==
 

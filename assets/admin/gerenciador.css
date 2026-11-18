@@ -254,3 +254,19 @@
 .icamp .icamp-chave-nova {
 	border-left-color: #2271b1;
 }
+
+/* Guia dos campos (docs/CAMPOS.md no painel). */
+.icamp-doc blockquote {
+	margin: 1em 0;
+	padding: 4px 16px;
+	background: #fcf9e8;
+	border-left: 4px solid #dba617;
+}
+
+.icamp-doc table {
+	margin: 1em 0;
+}
+
+.icamp-doc code {
+	font-size: 12px;
+}

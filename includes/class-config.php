@@ -48,7 +48,6 @@ final class Config {
 
 	/** Endereços de referência. */
 	public const URL_REPOSITORIO = 'https://github.com/alxmqsjr/cedu-inscricoes-campanhas';
-	public const URL_DOC_CAMPOS  = 'https://github.com/alxmqsjr/cedu-inscricoes-campanhas/blob/main/docs/CAMPOS.md';
 
 	/**
 	 * Todas as options criadas pelo plugin (usado no uninstall).

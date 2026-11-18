@@ -25,7 +25,6 @@ foreach ( $cedu_inscricoes_opcoes as $cedu_inscricoes_opcao ) {
 }
 
 delete_metadata( 'user', 0, 'cedu_inscricoes_por_pagina', '', true );
-delete_transient( 'cedu_inscricoes_release' );
 
 // Travas de importação esquecidas (processo interrompido no meio).
 global $wpdb;
