@@ -23,6 +23,7 @@ Recebe as inscrições das campanhas de um formulário externo (JSON via REST) e
 * Tela "Mídias": consulta por origem, somente leitura.
 * Tela "Informações": situação atual, formato do JSON, campos não configurados e tutorial para novas edições.
 * Comandos WP-CLI: `wp inscricoes importar|listar|apagar|chave`.
+* Atualizações pelo painel a partir das releases do GitHub, ou à mão com o zip da release.
 
 O CPT `inscricoes` e as taxonomias `status_inscricao` e `edicao_inscricao` são registrados pelo tema. O plugin só os registra se ninguém o tiver feito.
 
@@ -37,13 +38,19 @@ Sem chave configurada, o endpoint responde 503 a todos os envios.
 
 == Installation ==
 
-1. Em Plugins → Adicionar novo → Enviar plugin, envie o `cedu-inscricoes-campanhas-X.Y.Z.zip` e ative. Também dá para copiar a pasta `cedu-inscricoes-campanhas` para `wp-content/plugins/` por FTP.
-2. Configure a chave da API (ver acima).
-3. Confira a edição e o recebimento em Inscrições → Configurações.
+1. Baixe o `cedu-inscricoes-campanhas-X.Y.Z.zip` anexado à release mais recente em https://github.com/alxmqsjr/cedu-inscricoes-campanhas/releases.
+2. Em Plugins → Adicionar novo → Enviar plugin, envie o zip e ative. Também dá para copiar a pasta `cedu-inscricoes-campanhas` para `wp-content/plugins/` por FTP.
+3. Configure a chave da API (ver acima).
+4. Confira a edição e o recebimento em Inscrições → Configurações.
 
-Não há atualização automática pelo painel. Para instalar uma versão nova, envie o zip novo e confirme "Substituir o atual pelo enviado", ou substitua a pasta por FTP. As configurações e as inscrições não são afetadas.
+= Atualização =
+
+* Pelo painel: quando há uma release mais nova no GitHub, ela aparece em Plugins com "Atualizar agora".
+* À mão: baixe o zip da release, envie em Plugins → Adicionar novo → Enviar plugin e confirme "Substituir o atual pelo enviado", ou substitua a pasta por FTP.
+
+As configurações, a chave e as inscrições não são afetadas. Para desligar as verificações automáticas: `define( 'CEDU_INSCRICOES_ATUALIZAR', false );` no `wp-config.php`.
 
 == Changelog ==
 
 = 1.0.0 =
-* Primeira versão: recebimento por API, gerenciador de inscrições, consulta de mídias, liga/desliga do recebimento, campos configuráveis em `config/campos.php` e tela de informações.
+* Primeira versão: recebimento por API, gerenciador de inscrições, consulta de mídias, liga/desliga do recebimento, campos configuráveis em `config/campos.php`, tela de informações e atualizações pelo painel a partir das releases do GitHub.

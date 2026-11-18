@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Monta o .zip do plugin para instalar ou atualizar à mão no site
-# (Plugins → Adicionar novo → Enviar plugin, ou por FTP).
+# Monta o .zip que vai anexado à release do GitHub (é ele que o painel do
+# WordPress baixa em "Atualizar agora", e que também serve para instalar à mão
+# em Plugins → Adicionar novo → Enviar plugin).
 #
 # Uso, na raiz do repositório (Git Bash):  bash bin/montar-zip.sh
 # Resultado: dist/cedu-inscricoes-campanhas-X.Y.Z.zip, com a pasta interna
@@ -31,3 +32,5 @@ destino="dist/$SLUG-$cabecalho.zip"
 git archive --format=zip --prefix="$SLUG/" -o "$destino" HEAD
 
 echo "Gerado: $destino"
+echo "Próximo passo: git tag v$cabecalho && git push origin main v$cabecalho"
+echo "e criar a release v$cabecalho no GitHub com esse .zip anexado."

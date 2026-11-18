@@ -16,6 +16,6 @@ defined( 'ABSPATH' ) || exit;
 	</p>
 	<p>
 		<a class="button" href="<?php echo esc_url( Informacoes::url_doc() ); ?>"><?php esc_html_e( 'Guia dos campos', 'cedu-inscricoes-campanhas' ); ?></a>
-		<a class="button-link" href="<?php echo esc_url( Config::URL_REPOSITORIO ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Repositório do plugin (acesso restrito)', 'cedu-inscricoes-campanhas' ); ?></a>
+		<a class="button-link" href="<?php echo esc_url( Config::URL_REPOSITORIO ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Repositório do plugin', 'cedu-inscricoes-campanhas' ); ?></a>
 	</p>
 </div>

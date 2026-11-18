@@ -2,24 +2,34 @@
 
 Plugin WordPress que recebe as inscrições das campanhas enviadas por um formulário externo (JSON via REST) e oferece um gerenciador para o CPT `inscricoes`.
 
-> **Repositório privado.** O código fica restrito à equipe. Quem precisar de acesso deve ser adicionado como colaborador.
-
 - **Campos do formulário:** [`config/campos.php`](config/campos.php), com guia em [`docs/CAMPOS.md`](docs/CAMPOS.md). O mesmo guia aparece no painel, em *Inscrições → Informações → Guia dos campos*.
 - **Tutorial de uso:** no painel, *Inscrições → Informações*.
 - **Autor:** [Alexandre Marques](https://github.com/alxmqsjr/)
 
-## Instalação e atualização (manual)
+## Instalação
 
-O plugin **não se atualiza pelo painel**. Cada versão é instalada à mão:
+Baixe o `cedu-inscricoes-campanhas-X.Y.Z.zip` anexado à [release mais recente](https://github.com/alxmqsjr/cedu-inscricoes-campanhas/releases) (o arquivo anexado, não o "Source code"). Depois, em *Plugins → Adicionar novo → Enviar plugin*, envie o zip e ative.
+
+## Atualização
+
+Há duas formas. Nas duas, as configurações, a chave e as inscrições ficam no banco e não são afetadas.
+
+- **Pelo painel (automática):** o plugin consulta as releases deste repositório no máximo a cada 12 horas. Quando há uma versão mais nova, ela aparece em *Plugins* com "Atualizar agora".
+- **À mão:** baixe o zip da release, envie em *Plugins → Adicionar novo → Enviar plugin* e confirme **"Substituir o atual pelo enviado"**. Por FTP também funciona: substitua a pasta `wp-content/plugins/cedu-inscricoes-campanhas/`.
+
+Para desligar as verificações automáticas num site: `define( 'CEDU_INSCRICOES_ATUALIZAR', false );` no `wp-config.php`.
+
+> A atualização substitui todos os arquivos do plugin, inclusive `config/campos.php`. Por isso, mudanças nos campos devem ser feitas aqui no repositório e publicadas como nova versão.
+
+O servidor precisa permitir que o PHP grave em `wp-content/plugins`. Se a atualização pelo painel falhar com "não foi possível copiar alguns arquivos", ajuste o dono e as permissões da pasta ou use `FS_METHOD` no `wp-config.php`.
+
+### Publicando uma versão
 
 1. Suba a versão nos três lugares: `Version:` no cabeçalho de `cedu-inscricoes-campanhas.php`, `const VERSAO` no mesmo arquivo e `Stable tag:` no `readme.txt`. Registre a mudança no changelog do `readme.txt`.
 2. Faça o commit.
 3. Rode `bash bin/montar-zip.sh`. O script confere as versões e gera `dist/cedu-inscricoes-campanhas-X.Y.Z.zip` a partir do último commit.
-4. No site, vá em *Plugins → Adicionar novo → Enviar plugin*, escolha o `.zip` e confirme **"Substituir o atual pelo enviado"**. Por FTP também funciona: substitua a pasta `wp-content/plugins/cedu-inscricoes-campanhas/`.
-
-As configurações, a chave e as inscrições ficam no banco e não são afetadas pela troca de arquivos.
-
-> A atualização substitui todos os arquivos do plugin, inclusive `config/campos.php`. Por isso, mudanças nos campos devem ser feitas aqui no repositório e entrar no próximo zip.
+4. `git tag vX.Y.Z && git push origin main vX.Y.Z`.
+5. Crie a release `vX.Y.Z` no GitHub (não marque como pre-release) e **anexe o `.zip`**. Sem o zip anexado, o painel não oferece a atualização. O texto da release aparece em "Ver detalhes" no painel.
 
 ## Chave da API
 
@@ -67,6 +77,7 @@ includes/
   class-midia.php                 download, imagem padrão compartilhada, limpeza
   class-repositorio.php           consultas e exclusão
   class-cli.php                   wp inscricoes …
+  class-atualizador.php           atualizações pelo painel (releases do GitHub)
   api/class-autenticacao.php      chave da API
   api/class-rest-controller.php   POST cedu/v1/inscricao
   api/class-rest-admin.php        rotas internas de exclusão em lotes
@@ -74,7 +85,7 @@ includes/
 templates/admin/                  HTML das telas
 assets/admin/                     CSS e JS do painel (sem etapa de build)
 tests/smoke.php                   teste de ponta a ponta (wp eval-file)
-bin/montar-zip.sh                 gera o .zip para instalar
+bin/montar-zip.sh                 gera o .zip da release
 ```
 
 ## Hooks
@@ -101,7 +112,7 @@ wp inscricoes chave status
 wp eval-file wp-content/plugins/cedu-inscricoes-campanhas/tests/smoke.php
 ```
 
-O teste cria inscrições (com download de imagens) e confere metas, reenvio, imagem padrão, recebimento fechado, campos não configurados, telas e exclusão. No fim, apaga tudo o que criou. Rode só em ambiente de desenvolvimento. O zip de instalação não leva a pasta `tests/`.
+O teste cria inscrições (com download de imagens) e confere metas, reenvio, imagem padrão, recebimento fechado, campos não configurados, telas e exclusão. No fim, apaga tudo o que criou. Rode só em ambiente de desenvolvimento. O zip da release não leva a pasta `tests/`.
 
 ## Licença
 

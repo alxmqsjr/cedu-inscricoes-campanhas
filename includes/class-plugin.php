@@ -26,6 +26,7 @@ final class Plugin {
 		Post_Type::registrar();
 		Rest_Controller::registrar();
 		Rest_Admin::registrar();
+		Atualizador::registrar();
 
 		add_action( 'before_delete_post', array( self::class, 'antes_de_apagar' ), 10, 2 );
 

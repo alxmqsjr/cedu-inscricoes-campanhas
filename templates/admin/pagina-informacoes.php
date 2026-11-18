@@ -44,6 +44,7 @@ $cedu_inscricoes_limpo = ! empty( $_GET['limpo'] );
 		<li><a href="#status"><?php esc_html_e( 'Status (premiadas, menções…)', 'cedu-inscricoes-campanhas' ); ?></a></li>
 		<li><a href="#recebimento"><?php esc_html_e( 'Abrir e fechar o recebimento', 'cedu-inscricoes-campanhas' ); ?></a></li>
 		<li><a href="#nova-edicao"><?php esc_html_e( 'Checklist de nova edição', 'cedu-inscricoes-campanhas' ); ?></a></li>
+		<li><a href="#atualizacoes"><?php esc_html_e( 'Atualizações do plugin', 'cedu-inscricoes-campanhas' ); ?></a></li>
 		<li><a href="#gerenciar"><?php esc_html_e( 'Gerenciar, apagar e mídias', 'cedu-inscricoes-campanhas' ); ?></a></li>
 		<li><a href="#cli"><?php esc_html_e( 'Linha de comando (WP-CLI)', 'cedu-inscricoes-campanhas' ); ?></a></li>
 		<li><a href="#sobre"><?php esc_html_e( 'Sobre', 'cedu-inscricoes-campanhas' ); ?></a></li>
@@ -93,6 +94,22 @@ $cedu_inscricoes_limpo = ! empty( $_GET['limpo'] );
 			<tr>
 				<td><?php esc_html_e( 'Inscrições (todas as edições)', 'cedu-inscricoes-campanhas' ); ?></td>
 				<td><?php echo esc_html( number_format_i18n( Repositorio::contar() ) ); ?></td>
+			</tr>
+			<tr>
+				<td><?php esc_html_e( 'Versão do plugin', 'cedu-inscricoes-campanhas' ); ?></td>
+				<td>
+					<?php
+					$cedu_inscricoes_atu = Atualizador::situacao();
+					echo esc_html( VERSAO );
+					if ( ! $cedu_inscricoes_atu['ligado'] ) {
+						echo ' · ' . esc_html__( 'atualizações pelo painel desligadas no wp-config.php', 'cedu-inscricoes-campanhas' );
+					} elseif ( '' !== $cedu_inscricoes_atu['versao'] && version_compare( $cedu_inscricoes_atu['versao'], VERSAO, '>' ) ) {
+						/* translators: %s: versão disponível. */
+						echo ' · <span class="icamp-alerta">' . esc_html( sprintf( __( 'versão %s disponível', 'cedu-inscricoes-campanhas' ), $cedu_inscricoes_atu['versao'] ) ) . '</span>';
+					}
+					?>
+					· <a href="#atualizacoes"><?php esc_html_e( 'como atualizar', 'cedu-inscricoes-campanhas' ); ?></a>
+				</td>
 			</tr>
 			<tr>
 				<td><?php esc_html_e( 'Campos recebidos e não configurados', 'cedu-inscricoes-campanhas' ); ?></td>
@@ -308,6 +325,42 @@ $cedu_inscricoes_limpo = ! empty( $_GET['limpo'] );
 		<li><?php esc_html_e( 'No fim do prazo, feche o recebimento. Após a avaliação, atribua os Status.', 'cedu-inscricoes-campanhas' ); ?></li>
 	</ol>
 
+	<h2 id="atualizacoes"><?php esc_html_e( 'Atualizações do plugin', 'cedu-inscricoes-campanhas' ); ?></h2>
+	<p><?php esc_html_e( 'Há duas formas de instalar uma versão nova. Nas duas, as configurações, a chave e as inscrições ficam no banco e não são afetadas.', 'cedu-inscricoes-campanhas' ); ?></p>
+	<h3><?php esc_html_e( 'Pelo painel (automática)', 'cedu-inscricoes-campanhas' ); ?></h3>
+	<p>
+		<?php
+		printf(
+			/* translators: %s: link para a tela de plugins. */
+			esc_html__( 'O plugin consulta as versões publicadas no repositório no máximo a cada 12 horas. Quando há uma mais nova, ela aparece em %s com o link "Atualizar agora", como em qualquer plugin.', 'cedu-inscricoes-campanhas' ),
+			'<a href="' . esc_url( admin_url( 'plugins.php' ) ) . '">' . esc_html__( 'Plugins', 'cedu-inscricoes-campanhas' ) . '</a>'
+		);
+		?>
+	</p>
+	<h3><?php esc_html_e( 'À mão (baixando o zip)', 'cedu-inscricoes-campanhas' ); ?></h3>
+	<ol>
+		<li>
+			<?php
+			printf(
+				/* translators: %s: link para as releases. */
+				esc_html__( 'Baixe o arquivo cedu-inscricoes-campanhas-X.Y.Z.zip da versão desejada em %s (o arquivo anexado à versão, não o "Source code").', 'cedu-inscricoes-campanhas' ),
+				'<a href="' . esc_url( Atualizador::url_releases() ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Releases do repositório', 'cedu-inscricoes-campanhas' ) . '</a>'
+			);
+			?>
+		</li>
+		<li>
+			<?php
+			printf(
+				/* translators: %s: link para enviar plugin. */
+				esc_html__( 'Em %s, escolha o zip e confirme "Substituir o atual pelo enviado".', 'cedu-inscricoes-campanhas' ),
+				'<a href="' . esc_url( admin_url( 'plugin-install.php?tab=upload' ) ) . '">' . esc_html__( 'Plugins → Adicionar novo → Enviar plugin', 'cedu-inscricoes-campanhas' ) . '</a>'
+			);
+			?>
+		</li>
+		<li><?php esc_html_e( 'Também dá para substituir a pasta wp-content/plugins/cedu-inscricoes-campanhas/ por FTP.', 'cedu-inscricoes-campanhas' ); ?></li>
+	</ol>
+	<p class="description"><?php esc_html_e( 'A atualização substitui todos os arquivos do plugin, inclusive config/campos.php. Mudanças nos campos devem ser feitas no repositório e publicadas como nova versão. Para desligar as verificações automáticas: define( \'CEDU_INSCRICOES_ATUALIZAR\', false ); no wp-config.php.', 'cedu-inscricoes-campanhas' ); ?></p>
+
 	<h2 id="gerenciar"><?php esc_html_e( 'Gerenciar, apagar e mídias', 'cedu-inscricoes-campanhas' ); ?></h2>
 	<ul>
 		<li><?php esc_html_e( 'Gerenciar: busca (título, nome, e-mail, instituição, município ou identificador), filtros por edição e status, e a visão "Possíveis duplicadas" (mesmo título e mesmo e-mail).', 'cedu-inscricoes-campanhas' ); ?></li>
@@ -338,7 +391,7 @@ wp inscricoes chave status</pre>
 		<a href="<?php echo esc_url( (string) ( $cedu_inscricoes_dados['AuthorURI'] ?? '' ) ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( (string) ( $cedu_inscricoes_dados['Author'] ?? '' ) ); ?></a>.
 	</p>
 	<p>
-		<a href="<?php echo esc_url( Config::URL_REPOSITORIO ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Repositório (acesso restrito)', 'cedu-inscricoes-campanhas' ); ?></a>
+		<a href="<?php echo esc_url( Config::URL_REPOSITORIO ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Repositório', 'cedu-inscricoes-campanhas' ); ?></a>
 		·
 		<a href="<?php echo esc_url( Informacoes::url_doc() ); ?>"><?php esc_html_e( 'Guia dos campos', 'cedu-inscricoes-campanhas' ); ?></a>
 	</p>
