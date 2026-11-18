@@ -1,0 +1,8 @@
+# Arquivos de desenvolvimento: ficam no repositório, mas não entram no .zip
+# gerado por `git archive` (bin/montar-release.sh) nem no "Download ZIP" do GitHub.
+* text=auto eol=lf
+/tests              export-ignore
+/bin                export-ignore
+/.gitignore         export-ignore
+/.gitattributes     export-ignore
+/README.md          export-ignore

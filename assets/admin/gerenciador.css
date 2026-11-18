@@ -1,0 +1,256 @@
+/* Cemaden Educação: Inscrições de Campanhas: telas do painel. */
+
+.icamp .icamp-aviso {
+	max-width: 820px;
+}
+
+.icamp .icamp-detalhe {
+	display: block;
+	color: #646970;
+	font-size: 12px;
+}
+
+.icamp .icamp-perigo {
+	color: #b32d2e;
+	border-color: #b32d2e;
+}
+
+.icamp .icamp-perigo:hover,
+.icamp .icamp-perigo:focus {
+	color: #fff;
+	background: #b32d2e;
+	border-color: #b32d2e;
+}
+
+.icamp .column-imagens {
+	width: 22%;
+}
+
+.icamp .column-pontuacao,
+.icamp .column-data,
+.icamp .column-tamanho {
+	width: 9%;
+}
+
+.icamp .icamp-imagens {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+	align-items: center;
+}
+
+.icamp .icamp-capa {
+	width: 48px;
+	height: 48px;
+	object-fit: cover;
+	border-radius: 3px;
+	outline: 2px solid #2271b1;
+	outline-offset: -2px;
+}
+
+.icamp .icamp-mini {
+	width: 34px;
+	height: 34px;
+	object-fit: cover;
+	border-radius: 3px;
+}
+
+.icamp .icamp-sem-capa {
+	color: #a7aaad;
+	padding: 0 6px;
+}
+
+.icamp .icamp-arquivo {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.icamp .icamp-arquivo img {
+	width: 36px;
+	height: 36px;
+	object-fit: cover;
+	border-radius: 3px;
+	flex-shrink: 0;
+}
+
+.icamp .icamp-arquivo img.icamp-icone {
+	width: 24px;
+	height: 32px;
+	object-fit: contain;
+}
+
+.icamp .icamp-sem-autor {
+	color: #b32d2e;
+}
+
+/* Progresso da exclusão em lotes. */
+.icamp-progresso {
+	max-width: 820px;
+	margin-top: 20px;
+}
+
+.icamp-barra {
+	background: #dcdcde;
+	border-radius: 4px;
+	height: 24px;
+	overflow: hidden;
+}
+
+.icamp-barra-preenchida {
+	background: #b32d2e;
+	color: #fff;
+	font-size: 12px;
+	line-height: 24px;
+	height: 24px;
+	text-align: center;
+	white-space: nowrap;
+	transition: width 0.3s;
+	width: 0;
+}
+
+.icamp-progresso.icamp-ok .icamp-barra-preenchida {
+	background: #00a32a;
+}
+
+.icamp-progresso.icamp-erro .icamp-status {
+	color: #b32d2e;
+	font-weight: 600;
+}
+
+.icamp-log {
+	max-height: 300px;
+	overflow-y: auto;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	padding: 10px 10px 10px 28px;
+	margin-top: 12px;
+	font: 13px/1.5 Consolas, Monaco, monospace;
+}
+
+.icamp-log:empty {
+	display: none;
+}
+
+/* Configurações. */
+.icamp .icamp-chave-gerada {
+	font: 15px/1.4 Consolas, Monaco, monospace;
+	padding: 8px 10px;
+	background: #fff;
+	border: 1px solid #00a32a;
+	display: inline-block;
+	user-select: all;
+	word-break: break-all;
+}
+
+.icamp .icamp-imagem-padrao {
+	max-width: 150px;
+	height: auto;
+	display: block;
+	margin-top: 8px;
+	border: 1px solid #dcdcde;
+}
+
+/* Recebimento (liga/desliga). */
+.icamp .icamp-recebimento {
+	max-width: 820px;
+	padding: 4px 16px 12px;
+	background: #fff;
+	border-left: 4px solid #00a32a;
+}
+
+.icamp .icamp-recebimento.icamp-fechado {
+	border-left-color: #b32d2e;
+}
+
+.icamp .icamp-recebimento-estado .dashicons {
+	color: #00a32a;
+	vertical-align: text-bottom;
+}
+
+.icamp .icamp-fechado .icamp-recebimento-estado .dashicons {
+	color: #b32d2e;
+}
+
+.icamp .icamp-aviso-doc {
+	max-width: 820px;
+}
+
+/* Informações. */
+.icamp-info {
+	max-width: 960px;
+}
+
+.icamp-info h2 {
+	margin-top: 2em;
+	padding-top: 1em;
+	border-top: 1px solid #dcdcde;
+}
+
+.icamp-info .icamp-sumario {
+	columns: 2;
+	max-width: 640px;
+}
+
+.icamp-info pre {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	padding: 12px;
+	overflow-x: auto;
+	font-size: 12px;
+	line-height: 1.5;
+}
+
+.icamp-info .widefat td,
+.icamp-info .widefat th {
+	vertical-align: top;
+}
+
+.icamp-info .icamp-situacao td:first-child {
+	width: 220px;
+	font-weight: 600;
+}
+
+.icamp-info .icamp-ok {
+	color: #00a32a;
+}
+
+.icamp-info .icamp-alerta {
+	color: #b32d2e;
+}
+
+.icamp-info ol li,
+.icamp-info ul li {
+	margin-bottom: 6px;
+}
+
+/* Chave no wp-config.php. */
+.icamp .icamp-wp-config,
+.icamp .icamp-chave-nova {
+	max-width: 820px;
+	padding: 4px 16px 8px;
+	background: #fff;
+	border-left: 4px solid #00a32a;
+	margin-bottom: 12px;
+}
+
+.icamp .icamp-wp-config.icamp-fechado {
+	border-left-color: #dba617;
+}
+
+.icamp .icamp-wp-config.icamp-fechado .icamp-recebimento-estado .dashicons {
+	color: #dba617;
+}
+
+.icamp .icamp-wp-config pre,
+.icamp .icamp-chave-nova pre {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	padding: 10px 12px;
+	overflow-x: auto;
+	user-select: all;
+}
+
+.icamp .icamp-chave-nova {
+	border-left-color: #2271b1;
+}
