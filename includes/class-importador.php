@@ -205,7 +205,11 @@ final class Importador {
 	private static function gravar_metas( int $post_id, array $dados ): void {
 		foreach ( Esquema::campos( 'texto' ) as $campo ) {
 			if ( isset( $dados[ $campo ] ) && is_scalar( $dados[ $campo ] ) ) {
-				self::meta( $post_id, $campo, sanitize_textarea_field( (string) $dados[ $campo ] ) );
+				// A URL da capa é gravada como URL: sanitize_textarea_field() apagaria os "%2F".
+				$valor = Esquema::campo( 'capa' ) === $campo
+					? self::url( $dados[ $campo ] )
+					: sanitize_textarea_field( (string) $dados[ $campo ] );
+				self::meta( $post_id, $campo, $valor );
 			}
 		}
 
@@ -247,7 +251,7 @@ final class Importador {
 				if ( ! is_array( $item ) ) {
 					continue;
 				}
-				$url = esc_url_raw( self::texto( $item['url'] ?? '' ), array( 'http', 'https' ) );
+				$url = self::url( $item['url'] ?? '' );
 				if ( '' === $url ) {
 					continue;
 				}
@@ -282,7 +286,7 @@ final class Importador {
 				continue;
 			}
 
-			$url = esc_url_raw( trim( self::texto( $img['url'] ?? '' ) ), array( 'http', 'https' ) );
+			$url = self::url( $img['url'] ?? '' );
 			if ( '' === $url ) {
 				continue;
 			}
@@ -343,7 +347,7 @@ final class Importador {
 			return;
 		}
 
-		$capa_url = esc_url_raw( trim( self::texto( $dados[ Esquema::campo( 'capa' ) ] ?? '' ) ), array( 'http', 'https' ) );
+		$capa_url = self::url( $dados[ Esquema::campo( 'capa' ) ] ?? '' );
 		if ( '' !== $capa_url ) {
 			$capa = Midia::baixar( $capa_url, $post_id, $titulo );
 			if ( $capa ) {
@@ -420,9 +424,13 @@ final class Importador {
 	 */
 	private static function limpar( $valor, int $profundidade = 0 ) {
 		if ( is_string( $valor ) ) {
-			// Só remove HTML; não usa sanitize_textarea_field(), que apagaria
-			// sequências "%xx" e estragaria URLs (ex.: linksMateriais).
-			return wp_strip_all_tags( wp_check_invalid_utf8( $valor ) );
+			// Só remove HTML (como wp_strip_all_tags(), mas sem aparar espaços,
+			// para o texto ficar idêntico ao enviado). Não usa
+			// sanitize_textarea_field(), que apagaria sequências "%xx" e
+			// estragaria URLs (ex.: linksMateriais).
+			$valor = wp_check_invalid_utf8( $valor );
+			$valor = (string) preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', $valor );
+			return strip_tags( $valor );
 		}
 		if ( is_int( $valor ) || is_float( $valor ) || is_bool( $valor ) || null === $valor ) {
 			return $valor;
@@ -433,7 +441,7 @@ final class Importador {
 
 		$limpo = array();
 		foreach ( $valor as $chave => $item ) {
-			$chave           = is_int( $chave ) ? $chave : sanitize_text_field( (string) $chave );
+			$chave           = is_int( $chave ) ? $chave : strip_tags( wp_check_invalid_utf8( (string) $chave ) );
 			$limpo[ $chave ] = self::limpar( $item, $profundidade + 1 );
 		}
 		return $limpo;
@@ -454,10 +462,22 @@ final class Importador {
 	/**
 	 * Texto de uma linha, aceitando só valores escalares.
 	 *
+	 * Não use para URLs: sanitize_text_field() remove sequências "%xx", o que
+	 * quebra, por exemplo, os caminhos do Firebase Storage ("rascunhos%2F…").
+	 *
 	 * @param mixed $valor Valor recebido.
 	 */
 	private static function texto( $valor ): string {
 		return is_scalar( $valor ) ? sanitize_text_field( (string) $valor ) : '';
+	}
+
+	/**
+	 * URL http(s), preservando a codificação ("%2F" etc.). Vazio se inválida.
+	 *
+	 * @param mixed $valor Valor recebido.
+	 */
+	private static function url( $valor ): string {
+		return is_scalar( $valor ) ? esc_url_raw( trim( (string) $valor ), array( 'http', 'https' ) ) : '';
 	}
 
 	/**

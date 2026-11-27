@@ -121,7 +121,7 @@ $payload = array(
 	'pontuacao'              => '87',
 	'submittedAt'            => array( 'seconds' => 1760000000 ),
 	'evidenciasAcoes'        => array(
-		array( 'url' => 'https://example.org/a.jpg', 'caption' => 'Ação "1"' ),
+		array( 'url' => 'https://example.org/v0/b/form/o/rascunhos%2Fabc%2Facoes%2Ffoto.jpeg?alt=media&token=t-1', 'caption' => 'Ação "1"' ),
 		array( 'url' => '', 'caption' => 'sem url' ),
 		'não é objeto',
 	),
@@ -133,6 +133,7 @@ $payload = array(
 	'linksMateriais'         => array( 'https://example.org/arquivo%20final.pdf?a=1&b=2' ),
 	'grupoOrganizador'       => array( 'nome' => '<script>alert(1)</script>Grupo <b>X</b>', 'membros' => 4 ),
 	'imagem_4_publica'       => array( 'url' => 'https://educacao.cemaden.gov.br/', 'caption' => 'página HTML, não imagem' ),
+	'imagem_5_publica'       => array( 'url' => 'https://example.org/v0/b/form/o/rascunhos%2Fabc%2Falcancesocial%2Ffoto.jpeg?alt=media&token=t-5', 'caption' => 'formato Firebase' ),
 	'campoNovoTeste'         => 'valor-secreto-nao-pode-ser-guardado',
 	'_thumbnail_id'          => 999999,
 );
@@ -148,6 +149,7 @@ cedu_inscricoes_t( 'objeto com barra é JSON válido', ( json_decode( (string) g
 cedu_inscricoes_t( 'pontuacao e submitted_at', get_post_meta( $pid, 'pontuacao', true ) === '87' && get_post_meta( $pid, 'submitted_at', true ) === '1760000000' );
 $ev = json_decode( (string) get_post_meta( $pid, 'evidenciasAcoes', true ), true );
 cedu_inscricoes_t( 'evidências: só itens com URL', is_array( $ev ) && 1 === count( $ev ) && 'Ação "1"' === $ev[0]['caption'] );
+cedu_inscricoes_t( 'evidência: URL do Firebase com %2F e token preservada', 'https://example.org/v0/b/form/o/rascunhos%2Fabc%2Facoes%2Ffoto.jpeg?alt=media&token=t-1' === ( $ev[0]['url'] ?? '' ) );
 cedu_inscricoes_t( 'campo de texto recebido como array é ignorado', '' === get_post_meta( $pid, 'nomeSocial', true ) && ! metadata_exists( 'post', $pid, 'nomeSocial' ) );
 $i1 = json_decode( (string) get_post_meta( $pid, 'imagem_1_publica', true ), true );
 $i2 = json_decode( (string) get_post_meta( $pid, 'imagem_2_publica', true ), true );
@@ -170,6 +172,8 @@ $grupo = json_decode( (string) get_post_meta( $pid, 'grupoOrganizador', true ), 
 cedu_inscricoes_t( 'objeto: HTML removido, número mantido', is_array( $grupo ) && ! str_contains( (string) $grupo['nome'], '<' ) && 4 === $grupo['membros'], (string) ( $grupo['nome'] ?? '' ) );
 $i4 = json_decode( (string) get_post_meta( $pid, 'imagem_4_publica', true ), true );
 cedu_inscricoes_t( 'URL que não é imagem não vira mídia', is_array( $i4 ) && empty( $i4['local'] ) && 0 === $i4['attachment_id'] );
+$i5 = json_decode( (string) get_post_meta( $pid, 'imagem_5_publica', true ), true );
+cedu_inscricoes_t( 'imagem pública: URL do Firebase com %2F e token preservada', 'https://example.org/v0/b/form/o/rascunhos%2Fabc%2Falcancesocial%2Ffoto.jpeg?alt=media&token=t-5' === ( $i5['url_original'] ?? '' ) );
 cedu_inscricoes_t( 'campo desconhecido não é gravado', ! metadata_exists( 'post', $pid, 'campoNovoTeste' ) );
 cedu_inscricoes_t( 'campo "_thumbnail_id" do JSON não sobrescreve a capa', 999999 !== (int) get_post_thumbnail_id( $pid ) );
 $ign = (array) get_option( Config::OPCAO_CAMPOS_IGNORADOS, array() );

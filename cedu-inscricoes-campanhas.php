@@ -3,7 +3,7 @@
  * Plugin Name:       Cemaden Educação: Inscrições de Campanhas
  * Plugin URI:        https://github.com/alxmqsjr/cedu-inscricoes-campanhas
  * Description:       Recebe as inscrições das campanhas enviadas por um formulário externo (JSON via REST) e gerencia o CPT "inscricoes": listagem, filtros, exclusão em lotes com a mídia associada e consulta das mídias.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.6
  * Requires PHP:      8.0
  * Author:            Alexandre Marques
@@ -21,7 +21,7 @@ namespace CemadenInscricoes;
 
 defined( 'ABSPATH' ) || exit;
 
-const VERSAO  = '1.0.0';
+const VERSAO  = '1.0.1';
 const ARQUIVO = __FILE__;
 const DIR     = __DIR__;
 const DOMINIO = 'cedu-inscricoes-campanhas';

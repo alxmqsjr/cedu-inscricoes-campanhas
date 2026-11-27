@@ -4,7 +4,7 @@ Tags: inscrições, formulário, rest api, gerenciador
 Requires at least: 6.6
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,9 @@ Sem chave configurada, o endpoint responde 503 a todos os envios.
 As configurações, a chave e as inscrições não são afetadas. Para desligar as verificações automáticas: `define( 'CEDU_INSCRICOES_ATUALIZAR', false );` no `wp-config.php`.
 
 == Changelog ==
+
+= 1.0.1 =
+* Correção: as URLs das imagens públicas, da capa e das evidências perdiam a codificação "%2F" (usada nos caminhos do Firebase Storage) e as imagens não eram baixadas; o site exibia um endereço quebrado. Inscrições recebidas na 1.0.0 com imagens precisam ser reenviadas pelo formulário.
 
 = 1.0.0 =
 * Primeira versão: recebimento por API, gerenciador de inscrições, consulta de mídias, liga/desliga do recebimento, campos configuráveis em `config/campos.php`, tela de informações e atualizações pelo painel a partir das releases do GitHub.
